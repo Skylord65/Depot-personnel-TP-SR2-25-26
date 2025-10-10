@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 
         // attendre(); /* optionnel ici car de_reseau() fct bloquante */
         de_reseau(&paquet);
-        printf("--------------D %d-------------->\n", paquet.num_seq);
+        printf("--------------D %d-------------->|\n", paquet.num_seq);
         if (verifier_controle(paquet)) {
             if (paquet.num_seq == paquet_attendu){
                 /* extraction des donnees du paquet recu */
@@ -46,9 +46,22 @@ int main(int argc, char* argv[])
                 ack.somme_ctrl = generer_controle(ack);
                 inc(&paquet_attendu, 16);
             }
+            printf("<--------------ACK %d--------------|\n", ack.num_seq);
             vers_reseau(&ack);
-            printf("<--------------ACK %d--------------\n", ack.num_seq);
+            
         }
+    }
+    
+    depart_temporisateur(500);
+
+    int evt = attendre();
+    while (evt == -1)
+    {
+        if(evt==-1){
+            printf("<--------------ACK %d--------------|\n", ack.num_seq);
+            vers_reseau(&ack);
+        else if (evt = 1) {}
+        
     }
 
     printf("[TRP] Fin execution protocole transport.\n");

@@ -43,9 +43,9 @@ int main(int argc, char* argv[])
     de_application(message, &taille_msg);
 
     /* tant que l'émetteur a des données à envoyer */
-    while ( taille_msg != 0) {
+    while (taille_msg != 0 || borne_inf != prochain_paquet) {
         
-        if (dans_fenetre(borne_inf, prochain_paquet, taille_fin) && taille_msg!=0)
+        if (dans_fenetre(borne_inf, prochain_paquet, taille_fin) && taille_msg > 0)
         {
             
             /* construction paquet */
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 
             paquet[prochain_paquet].somme_ctrl = generer_controle(paquet[prochain_paquet]);
         
-            printf("--------------D %d-------------->\n", paquet[prochain_paquet].num_seq);
+            printf("|--------------D %d-------------->\n", paquet[prochain_paquet].num_seq);
             vers_reseau(&paquet[prochain_paquet]);
             if(borne_inf == prochain_paquet)
             {
@@ -71,17 +71,18 @@ int main(int argc, char* argv[])
             if (evt==-1)
             {
                 de_reseau(&ack);
-                printf("<--------------ACK %d--------------\n", ack.num_seq);
+                printf("|<--------------ACK %d--------------\n", ack.num_seq);
                 if (verifier_controle(ack) && dans_fenetre(borne_inf, ack.num_seq, taille_fin))
                 {
                     borne_inf = ack.num_seq;
                     inc(&borne_inf, 16);
-                    //printf("ack num addr : %p\n", &ack.num_seq);
                     if (borne_inf == prochain_paquet)
                     {
                         printf("Plus assez de crédits\n");
                         arret_temporisateur();
                     }
+                    //printf("ack num addr : %p\n", &ack.num_seq);
+                    
                 }
 
             } else 
@@ -90,7 +91,7 @@ int main(int argc, char* argv[])
                 depart_temporisateur(100);
                 while (i!=prochain_paquet)
                 {
-                    printf("------------- R D %d-------------->\n", paquet[i].num_seq);
+                    printf("|------------- R D %d-------------->\n", paquet[i].num_seq);
                     vers_reseau(&paquet[i]);
                     inc(&i, 16);
                 }
