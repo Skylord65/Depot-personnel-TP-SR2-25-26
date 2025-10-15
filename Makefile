@@ -1,5 +1,5 @@
 # ============================= #
-NOM_ETU = NOM_PRENOM_A_CHANGER
+NOM_ETU = MARQUISE_LOANN
 # ============================= #
 
 # Compiler and flags
