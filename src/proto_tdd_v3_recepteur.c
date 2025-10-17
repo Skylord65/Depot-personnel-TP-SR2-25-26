@@ -55,13 +55,13 @@ int main(int argc, char* argv[])
     depart_temporisateur(500);
 
     int evt = attendre();
-    while (evt == -1)
+    while (evt != 1)
     {
         if(evt==-1){
             printf("<--------------ACK %d--------------|\n", ack.num_seq);
             vers_reseau(&ack);
-        else if (evt = 1) {}
-        
+        }
+        evt =attendre();
     }
 
     printf("[TRP] Fin execution protocole transport.\n");
