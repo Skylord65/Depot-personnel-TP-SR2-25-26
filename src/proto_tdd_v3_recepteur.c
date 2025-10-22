@@ -45,25 +45,36 @@ int main(int argc, char* argv[])
                 ack.num_seq = paquet.num_seq;
                 ack.somme_ctrl = generer_controle(ack);
                 inc(&paquet_attendu, 16);
+                printf("<--------------ACK %d--------------|\n", ack.num_seq);
+                vers_reseau(&ack);
+            } else if (paquet_attendu!=0){
+                printf("<--------------ACK %d--------------|\n", ack.num_seq);
+                vers_reseau(&ack);
             }
-            printf("<--------------ACK %d--------------|\n", ack.num_seq);
-            vers_reseau(&ack);
             
         }
     }
     
+    int i_test = 0;
+
     depart_temporisateur(500);
 
     int evt = attendre();
-    while (evt != 1)
-    {
-        if(evt==-1){
-            printf("<--------------ACK %d--------------|\n", ack.num_seq);
-            vers_reseau(&ack);
-        }
-        evt =attendre();
-    }
 
+    while (evt == -1)
+    {
+        de_reseau(&paquet);
+        if(i_test>20) return 0;
+        if (test_temporisateur(1)==1){
+            arret_temporisateur();
+            depart_temporisateur(500);
+            evt = attendre();
+        }
+        printf("<--------------ACK R %d--------------|\n", ack.num_seq);
+        i_test++;
+        vers_reseau(&ack);
+    }
+    
     printf("[TRP] Fin execution protocole transport.\n");
     return 0;
 }

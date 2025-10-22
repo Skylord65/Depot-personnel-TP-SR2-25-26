@@ -76,6 +76,13 @@ void depart_temporisateur_num(int n, int ms);
  ***********************************************************************/
 void depart_temporisateur(int ms);
 
+/*********************************************************
+ * Vérification si le timer numéro n est en marche       *
+ * Retour :  1 si le timer numéro n est en route         *
+ *           0 sinon                                     *
+ *********************************************************/
+int test_temporisateur(int n);
+
 /************************************
  * Arrête le temporisateur numero n *
  ************************************/
