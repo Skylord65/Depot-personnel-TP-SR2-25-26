@@ -78,7 +78,6 @@ int main(int argc, char* argv[])
                     if(borne_inf != 0 && (borne_inf-1)==ack.num_seq){
                         compteur_ack++;
                         if(compteur_ack==3){
-                            compteur_ack=0;
                             int i = borne_inf;
                             depart_temporisateur(100);
                             while (i!=prochain_paquet)
