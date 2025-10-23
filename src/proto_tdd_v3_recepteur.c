@@ -1,6 +1,6 @@
 /*************************************************************
-* proto_tdd_v0 -  récepteur                                  *
-* TRANSFERT DE DONNEES  v0                                   *
+* proto_tdd_v3 -  récepteur                                  *
+* TRANSFERT DE DONNEES  v3                                   *
 *                                                            *
 * Protocole sans contrôle de flux, sans reprise sur erreurs  *
 *                                                            *

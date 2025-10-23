@@ -1,6 +1,6 @@
 /*************************************************************
-* proto_tdd_v0 -  émetteur                                   *
-* TRANSFERT DE DONNEES  v0                                   *
+* proto_tdd_v3.1 -  émetteur                                 *
+* TRANSFERT DE DONNEES  v3.1                                 *
 *                                                            *
 * Protocole sans contrôle de flux, sans reprise sur erreurs  *
 *                                                            *

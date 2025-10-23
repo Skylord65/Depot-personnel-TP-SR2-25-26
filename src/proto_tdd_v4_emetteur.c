@@ -1,6 +1,6 @@
 /*************************************************************
-* proto_tdd_v0 -  émetteur                                   *
-* TRANSFERT DE DONNEES  v0                                   *
+* proto_tdd_v4 -  émetteur                                   *
+* TRANSFERT DE DONNEES  v4                                   *
 *                                                            *
 * Protocole sans contrôle de flux, sans reprise sur erreurs  *
 *                                                            *
@@ -23,7 +23,6 @@ int main(int argc, char* argv[])
     int taille_msg; /* taille du message */
     int prochain_paquet = 0,borne_inf = 0, taille_fin;
     paquet_t paquet[16], ack; /* paquet utilisé par le protocole */
-    int compteur_ack = 0;
 
     if(argc==2){
         taille_fin = atoi(argv[1]);
@@ -61,9 +60,9 @@ int main(int argc, char* argv[])
         
             printf("|--------------D %d-------------->\n", paquet[prochain_paquet].num_seq);
             vers_reseau(&paquet[prochain_paquet]);
-            if(borne_inf == prochain_paquet)
+            if(test_temporisateur(prochain_paquet)==0)
             {
-                depart_temporisateur(100);
+                depart_temporisateur_num(prochain_paquet, 100);
             }
             inc(&prochain_paquet, 16);
             de_application(message, &taille_msg);
@@ -75,48 +74,24 @@ int main(int argc, char* argv[])
                 printf("|<--------------ACK %d--------------\n", ack.num_seq);
                 if (verifier_controle(ack) && dans_fenetre(borne_inf, ack.num_seq, taille_fin))
                 {
-                    if(borne_inf != 0 && (borne_inf-1)==ack.num_seq){
-                        compteur_ack++;
-                        if(compteur_ack==3){
-                            int i = borne_inf;
-                            depart_temporisateur(100);
-                            while (i!=prochain_paquet)
-                            {
-                                printf("|------------- R D %d-------------->\n", paquet[i].num_seq);
-                                vers_reseau(&paquet[i]);
-                                inc(&i, 16);
-                            }
-                        }
-                    } else{
-                        compteur_ack=0;
-                    }
-
-                    borne_inf = ack.num_seq;
-                    inc(&borne_inf, 16);
-                    if (borne_inf == prochain_paquet)
+                    arret_temporisateur_num(ack.num_seq);
+                    int i = borne_inf;
+                    while (!test_temporisateur(i) && dans_fenetre(borne_inf, i, taille_fin))
                     {
-                        printf("Plus assez de crédits\n");
-                        arret_temporisateur();
+                        arret_temporisateur_num(i);
+                        borne_inf = inc(&i, 16);
                     }
-                    //printf("ack num addr : %p\n", &ack.num_seq);
                     
                 }
 
             } else 
             {
-                int i = borne_inf;
-                depart_temporisateur(100);
-                while (i!=prochain_paquet)
-                {
-                    printf("|------------- R D %d-------------->\n", paquet[i].num_seq);
-                    vers_reseau(&paquet[i]);
-                    inc(&i, 16);
-                }
-                
+                depart_temporisateur_num(evt, 100);
+                printf("|------------- R D %d-------------->\n", paquet[evt].num_seq);
+                vers_reseau(&paquet[evt]);
             }
+
         }
-
-
 
 
         /* lecture des donnees suivantes de la couche application */
